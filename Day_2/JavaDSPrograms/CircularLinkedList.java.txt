@@ -1,0 +1,129 @@
+import java.util.Scanner;
+
+class Node {
+    int data;
+    Node next;
+
+    Node(int data) {
+        this.data = data;
+    }
+}
+
+class CircularLinkedList {
+    Node head = null;
+
+    // Insert at nth position
+    void insertAtPosition(int data, int position) {
+        Node newNode = new Node(data);
+        if (head == null) {
+            newNode.next = newNode;
+            head = newNode;
+            return;
+        }
+
+        if (position == 1) {
+            Node temp = head;
+            while (temp.next != head)
+                temp = temp.next;
+            newNode.next = head;
+            temp.next = newNode;
+            head = newNode;
+            return;
+        }
+
+        Node current = head;
+        for (int i = 1; i < position - 1 && current.next != head; i++) {
+            current = current.next;
+        }
+
+        newNode.next = current.next;
+        current.next = newNode;
+    }
+
+    // Delete by value
+    void deleteByValue(int value) {
+        if (head == null) return;
+
+        if (head.data == value) {
+            Node temp = head;
+            while (temp.next != head) temp = temp.next;
+            if (temp == head) {
+                head = null;
+                return;
+            }
+            temp.next = head.next;
+            head = head.next;
+            return;
+        }
+
+        Node current = head;
+        Node prev = null;
+
+        do {
+            prev = current;
+            current = current.next;
+            if (current.data == value) {
+                prev.next = current.next;
+                return;
+            }
+        } while (current != head);
+    }
+
+    // Modify a node
+    void modify(int oldValue, int newValue) {
+        if (head == null) return;
+
+        Node temp = head;
+        do {
+            if (temp.data == oldValue) {
+                temp.data = newValue;
+                return;
+            }
+            temp = temp.next;
+        } while (temp != head);
+    }
+
+    // Display
+    void display() {
+        if (head == null) {
+            System.out.println("List is empty.");
+            return;
+        }
+
+        Node temp = head;
+        do {
+            System.out.print(temp.data + " -> ");
+            temp = temp.next;
+        } while (temp != head);
+        System.out.println("(back to head)");
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        CircularLinkedList list = new CircularLinkedList();
+        int choice;
+
+        do {
+            System.out.println("\n1.Insert  2.Delete  3.Modify  4.Display  5.Exit");
+            choice = sc.nextInt();
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter data and position: ");
+                    list.insertAtPosition(sc.nextInt(), sc.nextInt());
+                    break;
+                case 2:
+                    System.out.print("Enter data to delete: ");
+                    list.deleteByValue(sc.nextInt());
+                    break;
+                case 3:
+                    System.out.print("Enter old and new data: ");
+                    list.modify(sc.nextInt(), sc.nextInt());
+                    break;
+                case 4:
+                    list.display();
+                    break;
+            }
+        } while (choice != 5);
+        sc.close();
+    }
+}

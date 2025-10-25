@@ -1,0 +1,79 @@
+class CircularQueue {
+    private int[] queue;
+    private int front, rear, size, capacity;
+
+    CircularQueue(int capacity) {
+        this.capacity = capacity;
+        queue = new int[capacity];
+        front = rear = -1;
+        size = 0;
+    }
+
+    boolean isFull() {
+        return size == capacity;
+    }
+
+    boolean isEmpty() {
+        return size == 0;
+    }
+
+    void enqueue(int data) {
+        if (isFull()) {
+            System.out.println("Queue is full, resizing...");
+            resize();
+        }
+        rear = (rear + 1) % capacity;
+        queue[rear] = data;
+        if (front == -1)
+            front = rear;
+        size++;
+    }
+
+    int dequeue() {
+        if (isEmpty()) {
+            System.out.println("Queue is empty");
+            return -1;
+        }
+        int data = queue[front];
+        front = (front + 1) % capacity;
+        size--;
+        if (size == 0)
+            front = rear = -1;
+        return data;
+    }
+
+    void resize() {
+        int newCapacity = capacity * 2;
+        int[] newQueue = new int[newCapacity];
+        for (int i = 0; i < size; i++) {
+            newQueue[i] = queue[(front + i) % capacity];
+        }
+        queue = newQueue;
+        front = 0;
+        rear = size - 1;
+        capacity = newCapacity;
+    }
+
+    void display() {
+        if (isEmpty()) {
+            System.out.println("Queue is empty");
+            return;
+        }
+        System.out.print("Queue: ");
+        for (int i = 0; i < size; i++)
+            System.out.print(queue[(front + i) % capacity] + " ");
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        CircularQueue cq = new CircularQueue(3);
+        cq.enqueue(10);
+        cq.enqueue(20);
+        cq.enqueue(30);
+        cq.display();
+        cq.enqueue(40);
+        cq.display();
+        cq.dequeue();
+        cq.display();
+    }
+}
